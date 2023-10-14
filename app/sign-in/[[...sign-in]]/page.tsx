@@ -43,8 +43,8 @@ export default function SignInForm() {
   };
 
   return (
-    <div className="flex flex-col w-full h-full items-center ">
-      <div className="flex flex-row fixed justify-between w-full max-w-screen-2xl px-6 py-4 border-b items-center backdrop-blur-lg ">
+    <div className="flex flex-col w-full h-full justify-center">
+      <div className="fixed w-full max-w-screen-2xl px-6 py-4 border-b items-center backdrop-blur-lg top-0">
         <Link
           href={'/'}
           className="flex flex-row items-center">
