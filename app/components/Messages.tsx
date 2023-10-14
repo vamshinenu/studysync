@@ -1,7 +1,7 @@
 'use client';
 import React, { useRef, useEffect } from 'react'
 import { useQuery } from 'convex/react';
-import { api } from '@/app/convex/_generated/api';
+import { api } from '@/convex/_generated/api';
 import useStore from '@/store';
 import { useUser } from '@clerk/nextjs';
 import { redirect } from 'next/dist/server/api-utils';
@@ -37,7 +37,7 @@ export default function Messages() {
     return (
         <div className="overflow-auto  place-items-start bg-slate-100 px-4 py-4 rounded-xl h-full">
             {
-                messages?.map(item => {
+                messages?.map((item: { _id: React.Key | null | undefined; userId: string; name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined; message: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined; _creationTime: string | number | Date; }) => {
                     return (
                         // {(message.User.role).split('_').at(-1)?.toLocaleLowerCase()} 
                         <>

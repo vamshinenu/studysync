@@ -3,12 +3,9 @@
 import { X } from 'lucide-react';
 import React from 'react'
 import { useMutation } from 'convex/react';
-import { api } from '@/app/convex/_generated/api';
-import { usePathname } from 'next/navigation';
+import { api } from '@/convex/_generated/api';
+
 import { useUser } from "@clerk/nextjs";
-
-
-import useStore from '@/store';
 import { toast } from 'sonner';
 
 export default function Message() {
