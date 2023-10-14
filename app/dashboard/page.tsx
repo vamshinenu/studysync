@@ -43,7 +43,7 @@ export default async function Home() {
                     <UserButton afterSignOutUrl="/" />
                 </div>
                 <Groups />
-                <div className="flex flex-col w-full rounded-lg bg-zinc-50 overflow-y-auto">
+                <div className="flex flex-col w-full rounded-lg bg-zinc-50 overflow-y-auto h-full">
                     <Messages />
                     <div className="h-4"></div>
                     <Message />
