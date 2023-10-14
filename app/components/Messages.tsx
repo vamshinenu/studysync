@@ -1,10 +1,10 @@
 'use client';
 import React, { useRef, useEffect } from 'react'
 import { useQuery } from 'convex/react';
+import Image from 'next/image';
 import { api } from '@/convex/_generated/api';
 import useStore from '@/store';
 import { useUser } from '@clerk/nextjs';
-import { redirect } from 'next/dist/server/api-utils';
 
 const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
@@ -19,7 +19,27 @@ export default function Messages() {
     // ? Convex
     let messages = useQuery(api.messages.getMessages, { groupId: "1" });
 
+
     console.log('messagess', messages);
+
+    const imgUrls: string[] = []
+
+    function addToUniqueArray(arr: string[], value: string) {
+        if (arr.indexOf(value) === -1) {
+            arr.push(value);
+        }
+    }
+
+    if (messages !== undefined) {
+        for (let i = 0; i < messages.length; i++) {
+            addToUniqueArray(imgUrls, messages[i].userId)
+        }
+    }
+
+    // let userImgs = useQuery(api.users.getUsers, { userIds: imgUrls });
+    // console.log('userImgs', userImgs);
+
+    const images = 0;
 
     useEffect(() => {
         if (messagesEndRef.current?.parentNode instanceof HTMLElement) {
@@ -27,6 +47,8 @@ export default function Messages() {
             parent.scrollTop = parent.scrollHeight;
         }
     }, [messages]);
+    console.log('messages', messages);
+
 
     const { isSignedIn, user, isLoaded } = useUser();
 
@@ -37,11 +59,17 @@ export default function Messages() {
     return (
         <div className="overflow-auto  place-items-start bg-slate-100 px-4 py-4 rounded-xl h-full">
             {
-                messages?.map((item: { _id: React.Key | null | undefined; userId: string; name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined; message: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | React.PromiseLikeOfReactNode | null | undefined; _creationTime: string | number | Date; }) => {
+                messages?.map((item) => {
                     return (
                         // {(message.User.role).split('_').at(-1)?.toLocaleLowerCase()} 
                         <>
                             <div key={item._id} className={`flex flex-row items-start ${item.userId === user!.id ? 'justify-end' : 'justify-start'}`}>
+                                <Image
+                                    src={item.imgUrl}
+                                    alt=''
+                                    width={8}
+                                    height={8}
+                                    className={`rounded-full bg-yellow-300 ${item.userId === user!.id ? 'hidden' : 'flex mr-2 '}`}></Image>
                                 <div className={`px-4 py-2 rounded-xl ${item.userId === user!.id ? 'bg-emerald-400 text-white' : 'bg-gray-300 text-black'}`}>
                                     <div className="text-start text-xs">{item.userId === user!.id ? 'You' : item.name}<br />
                                         <div className='text-sm'>{item.message}</div>
@@ -56,6 +84,13 @@ export default function Messages() {
                                         })}</span>
                                     </div>
                                 </div>
+                                <Image
+                                    src={item.imgUrl}
+                                    alt=''
+                                    height={1000}
+                                    width={1000}
+                                    style={{ objectFit: "cover" }}
+                                    className={`rounded-full h-8 w-8 ${item.userId === user!.id ? 'flex ml-2' : 'hidden'}`}></Image>
                             </div>
                             <div className="h-2"></div>
                         </>

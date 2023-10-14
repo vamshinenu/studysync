@@ -8,6 +8,7 @@ export const createMessage = mutation({
         message: v.string(),
         name: v.string(),
         groupId: v.string(),
+        imgUrl: v.string(),
     },
     handler: async (ctx, args) => {
         const newMessage = await ctx.db.insert('messages',
@@ -16,6 +17,7 @@ export const createMessage = mutation({
                 userId: args.userId,
                 name: args.name,
                 groupId: args.groupId,
+                imgUrl: args.imgUrl,
             }
         )
         return newMessage;

@@ -31,6 +31,7 @@ export default function Message() {
                 name: userName,
                 message: message,
                 groupId: "1",
+                imgUrl: _currentUser!.imageUrl,
             }
         ).then((res) => {
             setMessage('');

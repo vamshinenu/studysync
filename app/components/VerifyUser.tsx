@@ -1,14 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useUser } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { useMutation } from "convex/react";
+import { api } from '@/convex/_generated/api';
+
+
 
 export default function VerifyUser() {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const { isSignedIn, user, isLoaded } = useUser();
+    const createUser = useMutation(api.users.createUser);
+    const router = useRouter()
+
+
 
     if (!isLoaded) {
         return null;
@@ -18,12 +26,13 @@ export default function VerifyUser() {
         redirect('/sign-in');
     }
 
+
     const userId = user!.id;
 
 
     async function handleAccept(e: { preventDefault: () => void; }) {
         e.preventDefault();
-        console.log('accept');
+
         if (!firstName || !lastName) {
             toast.error("You must enter your first and last name to continue 🥸")
         }
@@ -41,16 +50,28 @@ export default function VerifyUser() {
                 },
             })
 
-            toast.promise(promise, {
+            const convexPromise = createUser({
+                firstname: firstName,
+                lastName: lastName,
+                userId: userId,
+                imageUrl: user!.imageUrl,
+            })
+            convexPromise.then((res) => {
+                console.log(res);
+            });
+
+            toast.promise(Promise.all([promise, convexPromise]), {
                 loading: 'Updating...',
                 success: (data) => {
-                    return 'We are happy to have you here🥳';
+                    return 'We are happy to have you here 🥳';
                 },
                 error: 'Something went wrong 😢'
             }
             )
-            // toast.success("We are happy to have you here! 👻");
         }
+        console.log("i am here");
+        router.push("/")
+        router.refresh()
     }
 
 
