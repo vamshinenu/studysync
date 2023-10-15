@@ -61,7 +61,7 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
         if (isCurrentUser) {
             return `rounded-tl-lg rounded-bl-lg ${showTimestamp || !isSameUserAsPrev ? 'rounded-tr-lg' : 'rounded-tr-sm'} ${!isSameUserAsNext ? 'rounded-br-lg' : 'rounded-br-sm'}`;
         } else {
-            return `rounded-tr-lg rounded-br-lg ${showTimestamp || !isSameUserAsPrev ? 'rounded-tl-lg' : 'rounded-tl-md'} ${!isSameUserAsNext ? 'rounded-bl-lg' : 'rounded-bl-sm '}`;
+            return `rounded-tr-lg rounded-br-lg ${showTimestamp || !isSameUserAsPrev ? 'rounded-tl-lg' : 'rounded-tl-sm'} ${!isSameUserAsNext ? 'rounded-bl-lg' : 'rounded-bl-sm '}`;
         }
     };
 
@@ -153,7 +153,7 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
                                 <div className={
                                     `px-2 py-1 ${isCurrentUser ? 'bg-emerald-400 text-white' : 'bg-slate-300 text-black'} ${borderRadiusClass} }`
                                 }>
-                                    <div className={`text-start text-xs text-slate-500 ${isCurrentUser ? 'hidden' : 'flex'}`}>{isCurrentUser ? 'You' : item.name}
+                                    <div className={`text-start text-xs text-slate-500 ${isCurrentUser ? 'hidden' : 'flex'} ${isSameUserAsPrev ? 'hidden' : 'flex'}`}>{isCurrentUser ? 'You' : item.name}
                                         <br />
                                     </div>
                                     <div className='text-sm'>{item.message}</div>
