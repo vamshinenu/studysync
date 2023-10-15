@@ -75,11 +75,14 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
                         return prevMessageTime ? (currentMessageTime - prevMessageTime) / (1000 * 60) : 0;
                     });
                     let prevMessageTime: number | null = null;
-                    let currentMessageTime: number = item._creationTime;
                     if (index > 0) {
                         prevMessageTime = (results![index - 1] as any)._creationTime; // Using type assertion as any
                     }
                     const timeDifference = reversedTimeDifferences[index];
+                    const isSameUserAsPrev = index > 0 && item.userId === results![index - 1].userId;
+                    const showTimestamp = timeDifference > 5 || index === 0;
+                    const showProfileImage = !isSameUserAsPrev || showTimestamp;
+                    const isSameUserAsNext = index < results!.length - 1 && item.userId === results![index + 1].userId;
 
                     return (
                         <>
@@ -120,28 +123,40 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
                                 )
                             }
                             <div key={item._id} className={`flex flex-row items-start ${item.userId === user!.id ? 'justify-end' : 'justify-start'}`}>
-                                <Image
-                                    src={item.imgUrl}
-                                    alt=''
-                                    height={1000}
-                                    width={1000}
-                                    style={{ objectFit: "cover" }}
-                                    className={`rounded-full h-6 w-6 ${item.userId === user!.id ? 'hidden' : 'flex mr-2'}`}></Image>
-                                <div className={`px-2 py-1 rounded-xl ${item.userId === user!.id ? 'bg-emerald-400 text-white' : 'bg-gray-300 text-black'}`}>
+                                {showProfileImage ? (
+                                    <Image
+                                        src={item.imgUrl}
+                                        alt=''
+                                        height={1000}
+                                        width={1000}
+                                        style={{ objectFit: "cover" }}
+                                        className={`rounded-full h-6 w-6 ${item.userId === user!.id ? 'hidden' : 'flex mr-1'}`}></Image>
+                                )
+                                    :
+                                    (
+                                        <div className={`h-6 w-6 ${item.userId === user!.id ? 'hidden' : 'flex mr-1'}`}></div>
+                                    )
+                                }
+                                <div className={`px-2 py-1 ${item.userId === user!.id ? 'bg-emerald-400 text-white' : 'bg-gray-300 text-black'}  rounded-tl-lg rounded-bl-lg ${showTimestamp || !isSameUserAsPrev ? 'rounded-tr-lg' : 'rounded-tr-sm'} ${!isSameUserAsNext ? 'rounded-br-lg' : 'rounded-br-sm'}`}>
                                     <div className={`text-start text-xs ${item.userId === user!.id ? 'hidden' : 'flex'}`}>{item.userId === user!.id ? 'You' : item.name}
                                         <br />
                                     </div>
                                     <div className='text-sm'>{item.message}</div>
                                 </div>
-                                <Image
-                                    src={item.imgUrl}
-                                    alt=''
-                                    height={1000}
-                                    width={1000}
-                                    style={{ objectFit: "cover" }}
-                                    className={`rounded-full h-6 w-6 ${item.userId === user!.id ? 'flex ml-2' : 'hidden'}`}></Image>
+                                {showProfileImage ? (
+                                    <Image
+                                        src={item.imgUrl}
+                                        alt=''
+                                        height={1000}
+                                        width={1000}
+                                        style={{ objectFit: "cover" }}
+                                        className={`rounded-full h-6 w-6 ${item.userId === user!.id ? 'flex ml-1' : 'hidden'}`}></Image>
+                                ) : (
+                                    <div className={`h-6 w-6 ${item.userId === user!.id ? 'flex ml-1' : 'hidden'}`}></div>
+                                )
+                                }
                             </div>
-                            <div className="h-2"></div>
+                            <div className={`${isSameUserAsPrev ? 'h-0.5' : 'h-2'}`}></div>
                         </>
                     )
                 })

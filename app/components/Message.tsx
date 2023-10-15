@@ -1,6 +1,6 @@
 'use client';
 
-import { X } from 'lucide-react';
+import { Send, X } from 'lucide-react';
 import React from 'react'
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
@@ -43,7 +43,7 @@ export default function Message({ groupId = "1" }: { groupId?: string }) {
 
     return (
 
-        <form className="flex flex-row items-center w-full"
+        <form className="flex flex-row items-center w-full gap-2"
             onSubmit={
                 handleSubmit
             }
@@ -52,13 +52,18 @@ export default function Message({ groupId = "1" }: { groupId?: string }) {
                 id="message"
                 name="message"
                 type="text"
-                placeholder="Send Message"
-                className={`w-full px-3 py-2 rounded-xl bg-slate-200 placeholder-slate-300 disabled:text-slate-700 focus:ring-primary-500 ring-1 ring-transparent border-none `}
+                placeholder="type something cool..."
+                className={`w-full px-3 py-2 rounded-xl bg-slate-200 placeholder-slate-400  disabled:text-slate-700 focus:ring-primary-500 ring-1 ring-transparent border-none `}
                 onChange={
                     (e) => setMessage(e.target.value)
                 }
                 value={message}
             />
+            <button type="submit" className={`flex flex-row items-center justify-center px-3 py-2 rounded-xl bg-primary-500 disabled:bg-slate-200 disabled:text-slate-400  disabled:cursor-not-allowed text-white disabled:opacity-50 h-full duration-300`}
+                disabled={message.length === 0}
+            >
+                <Send size={20} className="" />
+            </button>
         </form>
 
     )
