@@ -136,6 +136,7 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
                                     </div>
                                 )
                             }
+                            <div className={`${isSameUserAsPrev ? 'h-0.5' : 'h-2'}`}></div>
                             <div key={item._id} className={`flex flex-row items-start ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
                                 {showProfileImage ? (
                                     <Image
@@ -171,7 +172,6 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
                                 )
                                 }
                             </div>
-                            <div className={`${isSameUserAsPrev ? 'h-0.5' : 'h-2'}`}></div>
                         </>
                     )
                 })
