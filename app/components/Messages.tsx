@@ -57,6 +57,14 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
         return null;
     }
 
+    const getBorderRadiusClass = (isCurrentUser: any, isSameUserAsPrev: any, isSameUserAsNext: any, showTimestamp: any) => {
+        if (isCurrentUser) {
+            return `rounded-tl-lg rounded-bl-lg ${showTimestamp || !isSameUserAsPrev ? 'rounded-tr-lg' : 'rounded-tr-sm'} ${!isSameUserAsNext ? 'rounded-br-lg' : 'rounded-br-sm'}`;
+        } else {
+            return `rounded-tr-lg rounded-br-lg ${showTimestamp || !isSameUserAsPrev ? 'rounded-tl-lg' : 'rounded-tl-md'} ${!isSameUserAsNext ? 'rounded-bl-lg' : 'rounded-bl-sm '}`;
+        }
+    };
+
     return (
         <div ref={scrollRef}
             onScroll={handleScroll}
@@ -69,20 +77,26 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
             </div>
             {
                 results?.slice().reverse().map((item, index) => {
+                    let _revResults = results?.slice().reverse();
+
                     const reversedTimeDifferences = results?.slice().reverse().map((item, index, reversedResults) => {
                         let prevMessageTime = index > 0 ? (reversedResults[index - 1] as any)._creationTime : null;
                         let currentMessageTime = item._creationTime;
                         return prevMessageTime ? (currentMessageTime - prevMessageTime) / (1000 * 60) : 0;
                     });
+
                     let prevMessageTime: number | null = null;
                     if (index > 0) {
                         prevMessageTime = (results![index - 1] as any)._creationTime; // Using type assertion as any
                     }
+
+                    const isCurrentUser = item.userId === user!.id;
                     const timeDifference = reversedTimeDifferences[index];
-                    const isSameUserAsPrev = index > 0 && item.userId === results![index - 1].userId;
+                    const isSameUserAsPrev = index > 0 && item.userId === _revResults![index - 1].userId;
                     const showTimestamp = timeDifference > 5 || index === 0;
                     const showProfileImage = !isSameUserAsPrev || showTimestamp;
-                    const isSameUserAsNext = index < results!.length - 1 && item.userId === results![index + 1].userId;
+                    const isSameUserAsNext = index < _revResults!.length - 1 && item.userId === _revResults![index + 1].userId;
+                    const borderRadiusClass = getBorderRadiusClass(isCurrentUser, isSameUserAsPrev, isSameUserAsNext, showTimestamp);
 
                     return (
                         <>
@@ -122,7 +136,7 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
                                     </div>
                                 )
                             }
-                            <div key={item._id} className={`flex flex-row items-start ${item.userId === user!.id ? 'justify-end' : 'justify-start'}`}>
+                            <div key={item._id} className={`flex flex-row items-start ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
                                 {showProfileImage ? (
                                     <Image
                                         src={item.imgUrl}
@@ -130,15 +144,16 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
                                         height={1000}
                                         width={1000}
                                         style={{ objectFit: "cover" }}
-                                        className={`rounded-full h-6 w-6 ${item.userId === user!.id ? 'hidden' : 'flex mr-1'}`}></Image>
-                                )
-                                    :
+                                        className={`rounded-full h-6 w-6 ${isCurrentUser ? 'hidden' : 'flex mr-1'}`}></Image>
+                                ) :
                                     (
-                                        <div className={`h-6 w-6 ${item.userId === user!.id ? 'hidden' : 'flex mr-1'}`}></div>
+                                        <div className={`h-6 w-6 ${isCurrentUser ? 'hidden' : 'flex mr-1'}`}></div>
                                     )
                                 }
-                                <div className={`px-2 py-1 ${item.userId === user!.id ? 'bg-emerald-400 text-white' : 'bg-gray-300 text-black'}  rounded-tl-lg rounded-bl-lg ${showTimestamp || !isSameUserAsPrev ? 'rounded-tr-lg' : 'rounded-tr-sm'} ${!isSameUserAsNext ? 'rounded-br-lg' : 'rounded-br-sm'}`}>
-                                    <div className={`text-start text-xs ${item.userId === user!.id ? 'hidden' : 'flex'}`}>{item.userId === user!.id ? 'You' : item.name}
+                                <div className={
+                                    `px-2 py-1 ${isCurrentUser ? 'bg-emerald-400 text-white' : 'bg-slate-300 text-black'} ${borderRadiusClass} }`
+                                }>
+                                    <div className={`text-start text-xs text-slate-500 ${isCurrentUser ? 'hidden' : 'flex'}`}>{isCurrentUser ? 'You' : item.name}
                                         <br />
                                     </div>
                                     <div className='text-sm'>{item.message}</div>
@@ -150,9 +165,9 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
                                         height={1000}
                                         width={1000}
                                         style={{ objectFit: "cover" }}
-                                        className={`rounded-full h-6 w-6 ${item.userId === user!.id ? 'flex ml-1' : 'hidden'}`}></Image>
+                                        className={`rounded-full h-6 w-6 ${isCurrentUser ? 'flex ml-1' : 'hidden'}`}></Image>
                                 ) : (
-                                    <div className={`h-6 w-6 ${item.userId === user!.id ? 'flex ml-1' : 'hidden'}`}></div>
+                                    <div className={`h-6 w-6 ${isCurrentUser ? 'flex ml-1' : 'hidden'}`}></div>
                                 )
                                 }
                             </div>
