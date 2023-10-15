@@ -8,7 +8,7 @@ import { api } from '@/convex/_generated/api';
 import { useUser } from "@clerk/nextjs";
 import { toast } from 'sonner';
 
-export default function Message() {
+export default function Message({ groupId = "1" }: { groupId?: string }) {
 
     const [message, setMessage] = React.useState('');
     const { isSignedIn, user, isLoaded } = useUser();
@@ -30,7 +30,7 @@ export default function Message() {
                 userId: _currentUser!.id,
                 name: userName,
                 message: message,
-                groupId: "1",
+                groupId: groupId,
                 imgUrl: _currentUser!.imageUrl,
             }
         ).then((res) => {
@@ -53,7 +53,7 @@ export default function Message() {
                 name="message"
                 type="text"
                 placeholder="Send Message"
-                className={`w-full px-3 py-2 text-lg rounded-xl bg-slate-200 placeholder-slate-300 disabled:text-slate-700 focus:ring-primary-500 ring-1 ring-transparent border-none `}
+                className={`w-full px-3 py-2 rounded-xl bg-slate-200 placeholder-slate-300 disabled:text-slate-700 focus:ring-primary-500 ring-1 ring-transparent border-none `}
                 onChange={
                     (e) => setMessage(e.target.value)
                 }

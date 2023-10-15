@@ -1,5 +1,6 @@
 import { mutation, query } from './_generated/server';
 import { v } from 'convex/values';
+import { paginationOptsValidator } from 'convex/server';
 
 
 export const createMessage = mutation({
@@ -25,14 +26,25 @@ export const createMessage = mutation({
 });
 
 
+// export const getMessages = query({
+//     args: { groupId: v.string() },
+//     handler: async (ctx, args) => {
+//         const message = await ctx.db
+//             .query('messages')
+//             .filter((q) => q.eq(q.field('groupId'), args.groupId))
+//             .collect();
+//         return message;
+//     },
+// });
+
+
 export const getMessages = query({
-    args: { groupId: v.string() },
+    args: { groupId: v.string(), paginationOpts: paginationOptsValidator },
     handler: async (ctx, args) => {
-        const message = await ctx.db
-            .query('messages')
-            .filter((q) => q.eq(q.field('groupId'), args.groupId))
-            .collect();
-        return message;
+        return await ctx.db
+            .query("messages")
+            .filter((q) => q.eq(q.field("groupId"), args.groupId))
+            .order("desc")
+            .paginate(args.paginationOpts);
     },
 });
-
