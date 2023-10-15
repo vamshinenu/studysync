@@ -67,10 +67,11 @@ export default function Messages() {
                                 <Image
                                     src={item.imgUrl}
                                     alt=''
-                                    width={8}
-                                    height={8}
-                                    className={`rounded-full bg-yellow-300 ${item.userId === user!.id ? 'hidden' : 'flex mr-2 '}`}></Image>
-                                <div className={`px-4 py-2 rounded-xl ${item.userId === user!.id ? 'bg-emerald-400 text-white' : 'bg-gray-300 text-black'}`}>
+                                    height={1000}
+                                    width={1000}
+                                    style={{ objectFit: "cover" }}
+                                    className={`rounded-full   h-6 w-6 md:h-8 md:w-8 bg-yellow-300 ${item.userId === user!.id ? 'hidden' : 'flex mr-2 '}`}></Image>
+                                <div className={`px-2 py-2 rounded-xl ${item.userId === user!.id ? 'bg-emerald-400 text-white' : 'bg-gray-300 text-black'}`}>
                                     <div className="text-start text-xs">{item.userId === user!.id ? 'You' : item.name}<br />
                                         <div className='text-sm'>{item.message}</div>
                                         <span className="text-xs text-zinc-600">{new Date(item._creationTime).toLocaleString('en-US', {
@@ -90,7 +91,7 @@ export default function Messages() {
                                     height={1000}
                                     width={1000}
                                     style={{ objectFit: "cover" }}
-                                    className={`rounded-full h-8 w-8 ${item.userId === user!.id ? 'flex ml-2' : 'hidden'}`}></Image>
+                                    className={`rounded-full h-6 w-6 md:h-8 md:w-8 ${item.userId === user!.id ? 'flex ml-2' : 'hidden'}`}></Image>
                             </div>
                             <div className="h-2"></div>
                         </>
