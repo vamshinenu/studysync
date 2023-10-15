@@ -27,7 +27,7 @@ export default async function Home() {
 
     return (
         <div className="flex flex-col w-full h-screen items-center">
-            <div className="flex flex-col w-full h-full max-w-screen-2xl px-2 lg:px-8 gap-2">
+            <div className="flex flex-col w-full h-full max-w-screen-2xl lg:px-4 gap-2">
                 <div className="flex flex-row justify-between w-full max-w-screen-2xl px-2 lg:px-8 items-center backdrop-blur-lg bg-slate-100 py-2">
                     <div className="flex flex-row items-center">
                         <Image
@@ -43,7 +43,7 @@ export default async function Home() {
                     <UserButton afterSignOutUrl="/" />
                 </div>
                 <Groups />
-                <div className="flex flex-col w-full rounded-lg bg-zinc-50 overflow-y-auto h-full">
+                <div className="flex flex-col w-full rounded-lg bg-zinc-50 overflow-y-auto h-full px-2">
                     <Messages />
                     <div className="h-4"></div>
                     <Message />
