@@ -16,18 +16,13 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
 
     const handleScroll = useCallback((e: any) => {
         const { scrollTop } = e.target;
-        console.log("scrolling");
-
         if (scrollTop === 0) {
             loadMore(20);
         }
     }, []);
 
-
     useEffect(() => {
         const scrollDiv = scrollRef.current as any as HTMLDivElement;
-
-        console.log("The ref is: ", scrollRef.current);
 
         if (scrollDiv) {
             scrollDiv.addEventListener('scroll', handleScroll);

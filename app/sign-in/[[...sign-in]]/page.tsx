@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useSignIn } from "@clerk/nextjs";
+import { useSignIn, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,12 +11,22 @@ export default function SignInForm() {
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+
+
+
+  const { isSignedIn, user } = useUser();
+
+  if (!isLoaded || !isSignedIn) {
+    return null;
+  }
+
   // start the sign In process.
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     if (!isLoaded) {
       return;
     }
+
 
     try {
       const result = await signIn.create({

@@ -1,12 +1,13 @@
 'use client';
 
-import { Send, X } from 'lucide-react';
+import { Image, Send, X } from 'lucide-react';
 import React from 'react'
 import { useMutation } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 
 import { useUser } from "@clerk/nextjs";
 import { toast } from 'sonner';
+import SpeedDial from './SpeedDial';
 
 export default function Message({ groupId = "1" }: { groupId?: string }) {
 
@@ -19,9 +20,6 @@ export default function Message({ groupId = "1" }: { groupId?: string }) {
 
         e.preventDefault();
         const message = (e.currentTarget.elements[0] as HTMLInputElement).value;
-        console.log('message', message);
-        console.log('user', user);
-
         const _currentUser = user;
         const userName = _currentUser!.firstName || "Anonymous";
 
@@ -42,7 +40,6 @@ export default function Message({ groupId = "1" }: { groupId?: string }) {
     }
 
     return (
-
         <form className="flex flex-row items-center w-full gap-2"
             onSubmit={
                 handleSubmit
@@ -64,6 +61,8 @@ export default function Message({ groupId = "1" }: { groupId?: string }) {
             >
                 <Send size={20} className="" />
             </button>
+            <SpeedDial />
+
         </form>
 
     )

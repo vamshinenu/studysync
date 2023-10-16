@@ -27,6 +27,7 @@ export default function RootLayout({
             <Toaster
               richColors={true}
               closeButton={true}
+              position="top-right"
             />
 
           </ConvexClientProvider>
