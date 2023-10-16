@@ -11,7 +11,7 @@ export default async function Home() {
   console.log(user);
 
   if (user) {
-    redirect("/dashboard")
+    redirect("/chats")
   }
 
   return (
