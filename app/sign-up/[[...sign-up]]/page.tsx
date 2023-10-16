@@ -1,8 +1,8 @@
 "use client";
 
 import { ChangeEvent, useState } from "react";
-import { useSignUp } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { useSignUp, useUser } from "@clerk/nextjs";
+import { redirect, useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import Image from "next/image";
@@ -15,6 +15,19 @@ export default function SignUpForm() {
   const [error, setError] = useState(""); // [1
   const [code, setCode] = useState("");
   const router = useRouter();
+
+
+
+
+  const { isLoaded: _isLoaded, isSignedIn, user } = useUser();
+
+  if (!_isLoaded) {
+    return null;
+  }
+
+  if (isSignedIn) {
+    redirect("/chats");
+  }
 
 
   // Function to handle OTP code input

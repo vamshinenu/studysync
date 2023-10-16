@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useSignIn, useUser } from "@clerk/nextjs";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -14,11 +14,16 @@ export default function SignInForm() {
 
 
 
-  const { isSignedIn, user } = useUser();
+  const { isLoaded: _isLoaded, isSignedIn, user } = useUser();
 
-  if (!isLoaded || !isSignedIn) {
+  if (!_isLoaded) {
     return null;
   }
+
+  if (isSignedIn) {
+    redirect("/chats");
+  }
+
 
   // start the sign In process.
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
