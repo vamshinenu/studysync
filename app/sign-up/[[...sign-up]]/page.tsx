@@ -16,19 +16,24 @@ export default function SignUpForm() {
   const [code, setCode] = useState("");
   const router = useRouter();
 
+  const [loading, setLoading] = useState(false);
 
 
 
   const { isLoaded: _isLoaded, isSignedIn, user } = useUser();
+  console.log(_isLoaded, isSignedIn, user);
+
 
   if (!_isLoaded) {
+    console.log("here is the error 2");
+
     return null;
   }
 
-  if (isSignedIn) {
+  if (!loading && isSignedIn) {
+    console.log("redirecting");
     redirect("/chats");
   }
-
 
   // Function to handle OTP code input
   function handleInput(e: any, digit: number) {

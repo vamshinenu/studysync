@@ -11,18 +11,35 @@ export default function SignInForm() {
   const [emailAddress, setEmailAddress] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
 
 
 
   const { isLoaded: _isLoaded, isSignedIn, user } = useUser();
 
+
+  console.log("isSignedIn", isSignedIn);
+  console.log("user", user);
+  console.log("isLoaded", _isLoaded);
+
+
   if (!_isLoaded) {
+    console.log("loading");
+
     return null;
   }
 
-  if (isSignedIn) {
+  if (!loading && isSignedIn) {
+    console.log("redirecting");
+
     redirect("/chats");
+
   }
+  // if (isSignedIn) {
+  //   console.log("redirecting");
+
+  //   redirect("/chats");
+  // }
 
 
   // start the sign In process.
@@ -34,6 +51,7 @@ export default function SignInForm() {
 
 
     try {
+      setLoading(true);
       const result = await signIn.create({
         identifier: emailAddress,
         password,
@@ -42,7 +60,8 @@ export default function SignInForm() {
       if (result.status === "complete") {
         console.log(result);
         await setActive({ session: result.createdSessionId });
-        router.push("/dashboard")
+
+        router.push("/chats")
       }
       else {
         /*Investigate why the login hasn't completed */
