@@ -1,78 +1,85 @@
-import { currentUser } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
-import VerifyUser from "../components/VerifyUser";
+"use client";
 import Link from "next/link";
+import { useEffect } from "react";
 import { toast } from "sonner";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { useQuery } from "convex/react";
+import { api } from "@/convex/_generated/api";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import useStore from "@/store";
+import { formatDate, formatTime } from "@/lib/dataTimeFormatter";
 
 
-export default async function Home() {
 
-    const user = await currentUser();
+export default function Home() {
+    const setLongitude = useStore((state: any) => state.setLongitude);
+    const setLatitude = useStore((state: any) => state.setLatitude);
 
-    if (!user) {
-        console.log('no user');
-        redirect('/sign-in');
-    }
+    const latitude = useStore((state: any) => state.latitude);
+    const longitude = useStore((state: any) => state.longitude);
 
-    if (!user.firstName || !user.lastName) {
-        console.log('no name');
-        return (
-            <VerifyUser />
-        );
-    }
+    useEffect(() => {
+        if ('geolocation' in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const roundedLatitude = parseFloat(position.coords.latitude.toFixed(1));
+                    const roundedLongitude = parseFloat(position.coords.longitude.toFixed(1));
+                    setLatitude(roundedLatitude);
+                    setLongitude(roundedLongitude);
+                },
+                (error) => {
+                    if (error.code === 1) {
+                        toast.error('Unable to get your location 😕. Please reset the location preferences.');
+                        return;
+                    }
+                    console.log('Error:', error);
+                }
+            );
+        } else {
+            toast.error('Oops, Location is not supported by this browser.');
+            console.log('Geolocation is not supported by this browser.');
+        }
+    });
+
+
+
+    const groups = useQuery(api.groups.getGroups, { latitude, longitude });
+    console.log(groups);
 
     return (
-        <div className="flex flex-col w-full h-full max-w-screen-2xl items-center px-2 lg:px-8 ">
-            <div className="flex flex-col gap-2 overflow-x-scroll w-full h-full">
-                <Link
-                    href="/chats/3svke9nyhr3ftfn6j8391zkb9jzc030"
-                    className="rounded-lg bg-slate-50 h-20 w-full px-4 flex-shrink-0 text-center justify-center flex flex-col group duration-300 hover:bg-slate-200 hover:border-transparent border border-primary-400 cursor-pointer">
-                    <span className="text-xl font-bold group-hover:text-primary-500 duration-300">Global</span>
-                    <span className="text-xs text-slate-500">Use this as part of beta testing</span>
-                </Link>
-                <Link
-                    href={"/chats"}
-                    className="rounded-lg bg-slate-50 h-20 w-full px-4 flex-shrink-0 text-center justify-center flex flex-col group duration-300 hover:bg-slate-200 border-slate-300 hover:border-transparent border">
-                    <span className="text-xl font-bold group-hover:text-primary-500 duration-300">Chess</span>
-                    <span className="text-xs text-slate-500">2 members</span>
-                </Link>
-                <Link
-                    href={"/chats"}
-                    className="rounded-lg bg-slate-50 h-20 w-full px-4 flex-shrink-0 text-center justify-center flex flex-col group duration-300 hover:bg-slate-200 border-slate-300 hover:border-transparent border">
-                    <span className="text-xl font-bold group-hover:text-primary-500 duration-300">Legos Club</span>
-                    <span className="text-xs text-slate-500">4 members</span>
-                </Link>
-                <Link
-                    href={"/chats"}
-                    className="rounded-lg bg-slate-50 h-20 w-full px-4 flex-shrink-0 text-center justify-center flex flex-col group duration-300 hover:bg-slate-200 border-slate-300 hover:border-transparent border">
-                    <span className="text-xl font-bold group-hover:text-primary-500 duration-300">Fortnite club</span>
-                    <span className="text-xs text-slate-500">2 members</span>
-                </Link>
-                <Link
-                    href={"/chats"}
-                    className="rounded-lg bg-slate-50 h-20 w-full px-4 flex-shrink-0 text-center justify-center flex flex-col group duration-300 hover:bg-slate-200 border-slate-300 hover:border-transparent border">
-                    <span className="text-xl font-bold group-hover:text-primary-500 duration-300">Emo</span>
-                    <span className="text-xs text-slate-500">2 members</span>
-                </Link>
-                <Link
-                    href={"/chats"}
-                    className="rounded-lg bg-slate-50 h-20 w-full px-4 flex-shrink-0 text-center justify-center flex flex-col group duration-300 hover:bg-slate-200 border-slate-300 hover:border-transparent border">
-                    <span className="text-xl font-bold group-hover:text-primary-500 duration-300">Coding Projects</span>
-                    <span className="text-xs text-slate-500">2 members</span>
-                </Link>
-                <Link
-                    href={"/chats"}
-                    className="rounded-lg bg-slate-50 h-20 w-full px-4 flex-shrink-0 text-center justify-center flex flex-col group duration-300 hover:bg-slate-200 border-slate-300 hover:border-transparent border">
-                    <span className="text-xl font-bold group-hover:text-primary-500 duration-300">Gym Bros</span>
-                    <span className="text-xs text-slate-500">2 members</span>
-                </Link>
-                <Link
-                    href={"/chats"}
-                    className="rounded-lg bg-slate-50 h-20 w-full px-4 flex-shrink-0 text-center justify-center flex flex-col group duration-300 hover:bg-slate-200 border-slate-300 hover:border-transparent border">
-                    <span className="text-xl font-bold group-hover:text-primary-500 duration-300">Cooking Club</span>
-                    <span className="text-xs text-slate-500">2 members</span>
-                </Link>
-            </div>
-        </div>
+        <>
+            <div className="flex flex-col w-full h-full max-w-screen-2xl items-center px-2 lg:px-8">
+                <div className="grid grid-cols-3 w-full gap-4">
+                    {
+                        groups?.map((group) => {
+                            return (
+                                <Link key={group._id}
+                                    href={`/chats/${group._id}`}
+                                >
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle>
+                                                {group.groupName}
+                                            </CardTitle>
+                                            <CardDescription >
+                                                {group.groupDescription}
+                                            </CardDescription>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <div className="gap-2 flex flex-row">
+                                                <Badge variant='secondary' >{group.users!.length} Members</Badge>
+                                                <Separator orientation="vertical" />
+                                                <Badge variant='secondary' >{formatDate(group._creationTime)} {formatTime(group._creationTime)}</Badge>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </Link>
+                            )
+                        })
+                    }
+                </div>
+            </div></>
     );
 }

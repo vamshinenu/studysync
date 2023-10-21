@@ -1,20 +1,14 @@
 import { create } from 'zustand';
+import { User } from './app/components/UserInit';
 
 const useStore = create((set, get) => ({
-    searchTerm: '',
-    setSearchTerm: (searchTerm: string) => set({ searchTerm }),
-    menuHovered: false,
-    setMenuHovered: (menuHovered: boolean) => set({ menuHovered }),
-    candidates: [],
-    setCandidates: async (candidates: any) => set({ candidates }),
-    currentUser: {},
-    setCurrentUser: async (currentUser: any) => set({ currentUser }),
-    sortTerm: 'all',
-    setSortTerm: (sortTerm: string) => set({ sortTerm }),
-    candidate: {},
-    setCandidate: (candidate: any) => set({ candidate }),
-    notifications: [],
-    // setNotifications: (notification: any) => set({ notifications: [...get().notifications, notification] }),
+    longitude: -1000,
+    setLongitude: (longitude: number) => set({ longitude }),
+    latitude: -1000,
+    setLatitude: (latitude: number) => set({ latitude }),
+    user: '',
+    setUser: (user: User) => set({ user }),
+
 }));
 
 export default useStore;
