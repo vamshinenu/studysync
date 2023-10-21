@@ -95,10 +95,10 @@ export default function SignUpForm() {
         },
       })
       // ! UNCOMMENT THIS
-      // if (!validateEmail.ok) {
-      //   toast.error("Email not recognized as a college mail.");
-      //   return;
-      // }
+      if (!validateEmail.ok) {
+      toast.error("Email not recognized as a college mail.");
+      return;
+      }
       await signUp.create({
         emailAddress,
         password,
