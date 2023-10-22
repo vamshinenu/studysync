@@ -53,6 +53,20 @@ export const updateUserOnlineStatus = mutation({
 }
 );
 
+export const makeUsersOffline = mutation({
+    async handler(ctx, args) {
+
+        const onlineUsers = await ctx.db.query('users')
+            .filter((q) => q.eq(q.field('online'), true))
+            .collect();
+
+        if (onlineUsers.length === 0) return null;
+        for (const user of onlineUsers) {
+            await ctx.db.patch(user._id, { online: false })
+        }
+    },
+}
+);
 
 
 // export const getUsers = query({

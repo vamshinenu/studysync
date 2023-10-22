@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core'
 import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common'
 import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en'
-import { CheckCircle2, XCircle } from "lucide-react";
+import { CheckCircle2, LucideThermometerSnowflake, XCircle } from "lucide-react";
 export default function SignUpForm() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const [emailAddress, setEmailAddress] = useState("");
@@ -210,17 +210,20 @@ export default function SignUpForm() {
                       }
                     </>
                   ) :
-                    password.length > 0 &&
-                    (
-                      <p className="text-xs text-red-500 flex flex-row items-center gap-2">
-                        <XCircle width={20} /> Password must be at least 8 characters long
-                      </p>
-                    )
 
+                    password.length > 0 ?
+                      (
+                        <p className="text-xs text-red-500 flex flex-row items-center gap-2">
+                          <XCircle width={20} /> Password must be at least 8 characters long
+                        </p>
+                      ) : (
+                        <></>
+                      )
                 }
-
-
                 <Button variant={'secondary'} size={'lg'} onClick={handleSubmit} disabled={!isLoaded} >Sign up</Button>
+                <p className="text-xs text-gray-500">
+                  For password strength, we follow <a href="https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html" className="underline text-primary">OWASP</a> & <a href="https://zxcvbn-ts.github.io/zxcvbn/" className="underline text-primary">zxcvbn</a> guidelines.
+                </p>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   have an account?<Link href="/sign-in"><Button variant={'link'}>Sign in</Button></Link>
                 </p>

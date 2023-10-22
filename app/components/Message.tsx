@@ -8,6 +8,7 @@ import { api } from '@/convex/_generated/api';
 import { useUser } from "@clerk/nextjs";
 import { toast } from 'sonner';
 import SpeedDial from './SpeedDial';
+import { Button } from '@/components/ui/button';
 
 export default function Message({ groupId = "1" }: { groupId?: string }) {
 
@@ -61,7 +62,13 @@ export default function Message({ groupId = "1" }: { groupId?: string }) {
             >
                 <Send size={20} className="" />
             </button>
-            <SpeedDial />
+            <Button type="button"
+                onClick={() => toast.message('Image uploads will be added soon! have fun chatting!')}
+            >
+                {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                <Image className="w-6 h-6" />
+                <span className="sr-only">Share</span>
+            </Button>
 
         </form>
 
