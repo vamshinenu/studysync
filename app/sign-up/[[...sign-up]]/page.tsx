@@ -9,7 +9,10 @@ import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-
+import { zxcvbn, zxcvbnOptions } from '@zxcvbn-ts/core'
+import * as zxcvbnCommonPackage from '@zxcvbn-ts/language-common'
+import * as zxcvbnEnPackage from '@zxcvbn-ts/language-en'
+import { CheckCircle2, XCircle } from "lucide-react";
 export default function SignUpForm() {
   const { isLoaded, signUp, setActive } = useSignUp();
   const [emailAddress, setEmailAddress] = useState("");
@@ -22,6 +25,16 @@ export default function SignUpForm() {
 
   const { isLoaded: _isLoaded, isSignedIn, user } = useUser();
 
+  const options = {
+    translations: zxcvbnEnPackage.translations,
+    graphs: zxcvbnCommonPackage.adjacencyGraphs,
+    dictionary: {
+      ...zxcvbnCommonPackage.dictionary,
+      ...zxcvbnEnPackage.dictionary,
+    },
+  }
+
+  zxcvbnOptions.setOptions(options)
 
   if (!_isLoaded) {
     return null;
@@ -76,8 +89,6 @@ export default function SignUpForm() {
     }
   }
 
-
-
   // start the sign up process.
   const handleSubmit = async (e: { preventDefault: () => void; }) => {
     setLoading(true);
@@ -94,10 +105,10 @@ export default function SignUpForm() {
           "Content-Type": "application/json",
         },
       })
-      // ! UNCOMMENT THIS
+
       if (!validateEmail.ok) {
-      toast.error("Email not recognized as a college mail.");
-      return;
+        toast.error("Email not recognized as a college mail.");
+        return;
       }
       await signUp.create({
         emailAddress,
@@ -175,6 +186,40 @@ export default function SignUpForm() {
               <form className="space-y-2 md:space-y-4 flex flex-col justify" action="#">
                 <Input type="email" name="email" onChange={(e) => setEmailAddress(e.target.value)} id="email" placeholder="coolkid@school.edu" />
                 <Input type="password" name="password" onChange={(e) => setPassword(e.target.value)} id="password" placeholder="••••••••" />
+                {
+                  password.length >= 8 ? (
+                    <>
+                      {
+                        zxcvbn(password).score <= 1 ?
+                          (
+                            <p className="text-xs text-red-500 flex flex-row items-center gap-2">
+                              <XCircle width={20} /> {zxcvbn(password).feedback.suggestions}
+                            </p>
+                          ) :
+                          zxcvbn(password).score === 2 ?
+                            (
+                              <p className="text-xs text-orange-500 flex flex-row items-center gap-2">
+                                <CheckCircle2 width={20} /> {zxcvbn(password).feedback.suggestions}
+                              </p>
+                            ) :
+                            (
+                              <p className="text-xs text-primary flex flex-row items-center gap-2">
+                                <CheckCircle2 width={20} /> Strong password!. It would take: <span className="font-bold">~{zxcvbn(password).crackTimesDisplay.onlineNoThrottling10PerSecond}</span> to crack it
+                              </p>
+                            )
+                      }
+                    </>
+                  ) :
+                    password.length > 0 &&
+                    (
+                      <p className="text-xs text-red-500 flex flex-row items-center gap-2">
+                        <XCircle width={20} /> Password must be at least 8 characters long
+                      </p>
+                    )
+
+                }
+
+
                 <Button variant={'secondary'} size={'lg'} onClick={handleSubmit} disabled={!isLoaded} >Sign up</Button>
                 <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                   have an account?<Link href="/sign-in"><Button variant={'link'}>Sign in</Button></Link>
