@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { api } from '@/convex/_generated/api';
 import { useUser } from '@clerk/nextjs';
 
-import { usePaginatedQuery } from "convex/react";
+import { usePaginatedQuery, useQueries } from "convex/react";
 
 
 const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -59,11 +59,13 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
             return `rounded-tr-lg rounded-br-lg ${showTimestamp || !isSameUserAsPrev ? 'rounded-tl-lg' : 'rounded-tl-sm'} ${!isSameUserAsNext ? 'rounded-bl-lg' : 'rounded-bl-sm '}`;
         }
     };
+    console.log(results);
+
 
     return (
         <div ref={scrollRef}
             onScroll={handleScroll}
-            className="overflow-auto place-items-start bg-slate-100 px-4 py-4 rounded-xl h-full">
+            className="overflow-auto place-items-start bg-slatNe-100 px-4 py-4 rounded-xl h-full">
 
             <div className="text-center">
                 <button onClick={() => loadMore(20)} className={`text-xs rounded-lg bg-slate-200 px-2 py-1 text-slate-500 ${results?.length < 20 ? 'hidden' : ''}`}>
@@ -147,12 +149,25 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
                                     )
                                 }
                                 <div className={
-                                    `px-2 py-1 ${isCurrentUser ? 'bg-emerald-400 text-white' : 'bg-slate-300 text-black'} ${borderRadiusClass} }`
+                                    `px-2 py-1 ${isCurrentUser ? `${item.format === 'image' ? '' : 'bg-primary text-white'}` : `${item.format === 'image' ? '' : 'bg-secondary text-black'}`} ${borderRadiusClass} }`
                                 }>
                                     <div className={`text-start text-xs text-slate-500 ${isCurrentUser ? 'hidden' : 'flex'} ${isSameUserAsPrev ? 'hidden' : 'flex'}`}>{isCurrentUser ? 'You' : item.name}
                                         <br />
                                     </div>
-                                    <div className='text-sm'>{item.message}</div>
+                                    {
+                                        item.format === 'image' ? (
+                                            <div className="flex flex-row items-center">
+                                                <Image
+                                                    src={item.message}
+                                                    alt=''
+                                                    height={300}
+                                                    width={300}
+                                                    style={{ objectFit: "cover" }}
+                                                    className={`rounded-xl  ${isCurrentUser ? 'ml-1' : 'mr-1'}`}></Image>
+                                            </div>
+                                        ) :
+                                            <div className='text-sm'>{item.message}</div>
+                                    }
                                 </div>
                                 {showProfileImage ? (
                                     <Image
@@ -161,7 +176,8 @@ export default function Messages({ groupId = "1" }: { groupId?: string }) {
                                         height={1000}
                                         width={1000}
                                         style={{ objectFit: "cover" }}
-                                        className={`rounded-full h-6 w-6 ${isCurrentUser ? 'flex ml-1' : 'hidden'}`}></Image>
+                                        className={`rounded-full h-6 w-6 ${isCurrentUser ? 'flex ml-1' : 'hidden'}`}>
+                                    </Image>
                                 ) : (
                                     <div className={`h-6 w-6 ${isCurrentUser ? 'flex ml-1' : 'hidden'}`}></div>
                                 )

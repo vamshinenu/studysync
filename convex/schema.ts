@@ -8,6 +8,7 @@ export default defineSchema({
         message: v.string(),
         name: v.string(),
         userId: v.string(),
+        format: v.optional(v.string()),
     })
         .index("by_groupId", ["groupId"]),
 
